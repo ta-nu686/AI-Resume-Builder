@@ -1,6 +1,6 @@
 import Resume from "../models/Resume.js";
 import ai from "../configs/ai.js";
-import { PDFParse } from "pdf-parse";
+import PDFParse from "pdf-parse";
 
 export const enhanceProfessionalSummary=async(req,res)=>{
     try{
@@ -12,7 +12,7 @@ export const enhanceProfessionalSummary=async(req,res)=>{
              model:process.env.OPENAI_MODEL,
     messages: [
         {   role: "system",
-            content: "You are an expert in resume writing. Your task is to enhance the professional summary of a resumeRouter. The summary should be 1-2 sentences also highlighting key Skills,and career objectives.Make it compelling and ATS friendly."
+            content: "You are an expert in resume writing. Your task is to enhance the professional summary of a resumeRouter. The summary should be 1-2 sentences also highlighting key Skills,and [...]
         },
         {
             role: "user",
@@ -40,7 +40,7 @@ export const enhanceJobDescription=async(req,res)=>{
              model:process.env.OPENAI_MODEL,
     messages: [
         {   role: "system",
-            content: "You are an expert in resume writing. Your task is to enhance the job description of a resume. The job description should be 1-2 sentences also highlighting key Skills,and career objectives.Make it compelling and ATS friendly."
+            content: "You are an expert in resume writing. Your task is to enhance the job description of a resume. The job description should be 1-2 sentences also highlighting key Skills,and car[...]
         },
         {
             role: "user",
@@ -140,10 +140,3 @@ Return JSON in this exact format (use empty strings for missing fields):
         return res.status(400).json({message:error.message})
     }
 }
-
-
-
-
-
-
-
