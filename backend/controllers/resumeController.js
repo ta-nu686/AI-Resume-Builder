@@ -96,17 +96,24 @@ export const updateResume = async(req,res)=>{
 
         
         if(image){
-            const imageBufferData= fs.createReadStream(image.path)
+            try {
+                const imageBufferData= fs.createReadStream(image.path)
 
-            const response = await imagekit.files.upload({
-                file: imageBufferData,
-                fileName: 'resume.png',
-                folder:'user-resumes',
-                transformation:{
-                   pre:'w-300,h-300,fo-face,z-0.75' + (removeBackground ? ',e-bgremove': '')
+                const response = await imagekit.files.upload({
+                    file: imageBufferData,
+                    fileName: 'resume.png',
+                    folder:'user-resumes',
+                    transformation:{
+                       pre:'w-300,h-300,fo-face,z-0.75' + (removeBackground ? ',e-bgremove': '')
+                    }
+                });
+                resumeDataCopy.personal_info.image=response.url;
+            } finally {
+                // Clean up temporary file
+                if (image.path && fs.existsSync(image.path)) {
+                    fs.unlinkSync(image.path);
                 }
-            });
-            resumeDataCopy.personal_info.image=response.url;
+            }
         }
 
         const resume=await Resume.findOneAndUpdate(
