@@ -62,10 +62,29 @@ export const enhanceJobDescription=async(req,res)=>{
 
 export const uploadResume=async(req,res)=>{
     try{
-        const{resumeText,title}=req.body;
-        const userId=req.userId;
-        if(!resumeText || !title){
-            return res.status(400).json({message: "Missing required fields"})
+        const {title} = req.body;
+        const userId = req.userId;
+        const file = req.file;
+
+        if(!file){
+            return res.status(400).json({message: "Resume file is required"})
+        }
+        if(!title){
+            return res.status(400).json({message: "Resume title is required"})
+        }
+
+        // Extract text from PDF
+        let resumeText = '';
+        try {
+            const pdfData = await PDFParse(file.buffer);
+            resumeText = pdfData.text;
+        } catch (pdfError) {
+            console.error('PDF parsing error:', pdfError.message);
+            return res.status(400).json({message: "Failed to parse PDF. Please ensure it's a valid PDF file."})
+        }
+
+        if(!resumeText || resumeText.trim().length === 0){
+            return res.status(400).json({message: "Could not extract text from PDF"})
         }
 
         const systemPrompt="You are an expert AI Agent to extract data from resume. Return valid JSON only."
