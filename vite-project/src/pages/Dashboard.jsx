@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import toast from 'react-hot-toast'
 import api from '../configs/api'
-import pdfToText from 'react-pdftotext'
 
 const Dashboard = () =>{
   const{user,token}= useSelector(state=>state.auth)
@@ -49,13 +48,22 @@ const Dashboard = () =>{
     event.preventDefault()
     setIsLoading(true)
     try{
-      const resumeText=await pdfToText(resume)
-      const {data}= await api.post('/api/ai/upload-resume',{title,resumeText},{headers: { Authorization: `Bearer ${token}` }})
+      const formData = new FormData()
+      formData.append('resume', resume)
+      formData.append('title', title)
+
+      const {data}= await api.post('/api/ai/upload-resume', formData, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      })
       setTitle('')
       setResume(null)
       setShowUploadResume(false)
       navigate(`/app/builder/${data.resumeId}`)
     }catch(error){
+      console.error('Upload error:', error)
       toast.error(error?.response?.data?.message || error.message)
     }
     setIsLoading(false)
