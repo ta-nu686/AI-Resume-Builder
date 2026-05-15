@@ -262,42 +262,43 @@ export const enhanceProfessionalSummary = async (req, res) => {
 
         const { userContent } = req.body;
 
-        if (!userContent?.trim()) {
-
+        if (!userContent) {
             return res.status(400).json({
-                success: false,
-                message: "Professional summary is required"
+                message: "Missing required fields"
             });
         }
 
-        const systemPrompt = `
-You are an expert ATS resume writer.
+        const response = await ai.chat.completions.create({
 
-Enhance the professional summary:
-- Keep it concise
-- ATS optimized
-- Professional tone
-- Highlight technical skills
-- Mention career strengths
-`;
+            model: process.env.OPENAI_MODEL,
 
-        const enhancedContent = await generateAIResponse(
-            systemPrompt,
-            userContent
-        );
+            messages: [
+                {
+                    role: "system",
+                    content: `You are an expert resume writer.
+Enhance the professional summary.
+Make it ATS friendly, concise, impactful, and professional.`
+                },
+                {
+                    role: "user",
+                    content: userContent
+                }
+            ]
+        });
+
+        const enhancedContent =
+            response.choices[0].message.content;
 
         return res.status(200).json({
-            success: true,
             enhancedContent
         });
 
     } catch (error) {
 
-        console.error("Professional Summary Error:", error);
+        console.log(error);
 
         return res.status(500).json({
-            success: false,
-            message: "Failed to enhance professional summary"
+            message: error.message
         });
     }
 };
@@ -312,42 +313,43 @@ export const enhanceJobDescription = async (req, res) => {
 
         const { userContent } = req.body;
 
-        if (!userContent?.trim()) {
-
+        if (!userContent) {
             return res.status(400).json({
-                success: false,
-                message: "Job description is required"
+                message: "Missing required fields"
             });
         }
 
-        const systemPrompt = `
-You are an expert ATS resume writer.
+        const response = await ai.chat.completions.create({
 
-Enhance the job description:
-- Use action verbs
-- ATS optimized
-- Professional tone
-- Highlight achievements
-- Keep concise and impactful
-`;
+            model: process.env.OPENAI_MODEL,
 
-        const enhancedContent = await generateAIResponse(
-            systemPrompt,
-            userContent
-        );
+            messages: [
+                {
+                    role: "system",
+                    content: `You are an expert resume writer.
+Enhance the job description using strong action verbs.
+Make it ATS friendly and professional.`
+                },
+                {
+                    role: "user",
+                    content: userContent
+                }
+            ]
+        });
+
+        const enhancedContent =
+            response.choices[0].message.content;
 
         return res.status(200).json({
-            success: true,
             enhancedContent
         });
 
     } catch (error) {
 
-        console.error("Job Description Error:", error);
+        console.log(error);
 
         return res.status(500).json({
-            success: false,
-            message: "Failed to enhance job description"
+            message: error.message
         });
     }
 };
