@@ -1,13 +1,24 @@
 import express from "express";
 import multer from "multer";
+import upload from "../configs/multer.js";
 import { enhanceJobDescription, enhanceProfessionalSummary, uploadResume } from "../controllers/aiController.js";
 import protect from "../middlewares/authMiddleware.js";
 
 const aiRouter = express.Router();
-const upload = multer({ storage: multer.memoryStorage() });
+// const upload = multer({ storage: multer.memoryStorage() });
 
 aiRouter.post('/enhance-pro-sum', protect, enhanceProfessionalSummary);
 aiRouter.post('/enhance-job-desc', protect, enhanceJobDescription);
-aiRouter.post('/upload-resume', protect, upload.single('resume'), uploadResume);
+// aiRouter.post('/upload-resume', protect, upload.single('resume'), uploadResume);
+aiRouter.post(
+  '/upload-resume',
+  protect,
+  (req, res, next) => {
+      console.log("ROUTE HIT");
+      next();
+  },
+  upload.single('resume'),
+  uploadResume
+);
 
 export default aiRouter;
