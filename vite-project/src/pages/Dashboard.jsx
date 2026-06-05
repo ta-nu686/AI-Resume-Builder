@@ -48,6 +48,7 @@ const Dashboard = () =>{
     event.preventDefault()
     setIsLoading(true)
     try{
+<<<<<<< HEAD
       const formData = new FormData()
       formData.append('resume', resume)
       formData.append('title', title)
@@ -61,13 +62,30 @@ const Dashboard = () =>{
       setTitle('')
       setResume(null)
       setShowUploadResume(false)
+=======
+      const formData = new FormData();
+      formData.append('title', title);
+      formData.append('resume', resume);
+
+      const {data}= await api.post('/api/ai/upload-resume', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      setTitle('');
+      setResume(null);
+      setShowUploadResume(false);
+
+      toast.success("resume upload successfully");
+>>>>>>> f377e55 (Update Dashboard changes)
       navigate(`/app/builder/${data.resumeId}`)
     }catch(error){
       console.error('Upload error:', error)
       toast.error(error?.response?.data?.message || error.message)
+    }finally{
+      setIsLoading(false);
     }
-    setIsLoading(false)
-
   }
 
 
@@ -209,7 +227,7 @@ const Dashboard = () =>{
                     )}
                   </div>
                 </label>
-                <input id='resume-input' name='resume-input' type="file" accept=".pdf,.doc,.docx" hidden onChange={(e)=> setResume(e.target.files[0])} required />
+                <input id='resume-input' name='resume-input' type="file" accept=".pdf,.docx" hidden onChange={(e)=> setResume(e.target.files[0])} />
               </div>
 
               <button type='submit' disabled={isLoading || !title.trim() || !resume} className='w-full py-2 bg-green-600 text-white rounded
