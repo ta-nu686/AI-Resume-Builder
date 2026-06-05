@@ -45,28 +45,12 @@ const Dashboard = () =>{
   }
 
   const uploadResume=async (event) =>{
-    event.preventDefault()
-    setIsLoading(true)
+    event.preventDefault();
+    setIsLoading(true);
     try{
-<<<<<<< HEAD
       const formData = new FormData()
-      formData.append('resume', resume)
-      formData.append('title', title)
-
-      const {data}= await api.post('/api/ai/upload-resume', formData, {
-        headers: { 
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
-        }
-      })
-      setTitle('')
-      setResume(null)
-      setShowUploadResume(false)
-=======
-      const formData = new FormData();
       formData.append('title', title);
       formData.append('resume', resume);
-
       const {data}= await api.post('/api/ai/upload-resume', formData, {
         headers: {
           Authorization: `Bearer ${token}`
@@ -78,15 +62,14 @@ const Dashboard = () =>{
       setShowUploadResume(false);
 
       toast.success("resume upload successfully");
->>>>>>> f377e55 (Update Dashboard changes)
-      navigate(`/app/builder/${data.resumeId}`)
+      navigate(`/app/builder/${data.resumeId}`);
     }catch(error){
-      console.error('Upload error:', error)
-      toast.error(error?.response?.data?.message || error.message)
+      console.error('Upload error:', error);
+      toast.error(error?.response?.data?.message || error.message);
     }finally{
       setIsLoading(false);
     }
-  }
+  };
 
 
   
